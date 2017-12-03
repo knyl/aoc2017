@@ -18,14 +18,14 @@ defmodule Day3Test do
   end
 
   test "Data from square 1024 travels 31 steps" do
-    assert Day3.spiral_memory_pt1(1024) == 31 
+    assert Day3.spiral_memory_pt1(1024) == 31
   end
 
   test "First number larger than 7 is 10" do
-    assert Day3.spiral_memory_pt2(7) == 10 
+    assert Day3.spiral_memory_pt2(7) == 10
   end
 
   test "First number larger than 55 is 57" do
-    assert Day3.spiral_memory_pt2(55) == 57 
+    assert Day3.spiral_memory_pt2(55) == 57
   end
 end

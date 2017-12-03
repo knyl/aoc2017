@@ -9,7 +9,7 @@ defmodule Aoc2017 do
     numbers = number_string |> String.codepoints |> Enum.map(&String.to_integer/1)
     Day1.inverse_captcha_pt1(numbers)
   end
-  
+
   @doc """
   Solves day 1, part 2 of Advent of Code 2017.
 
@@ -38,7 +38,7 @@ defmodule Aoc2017 do
     matrix_with_numbers = Enum.map(matrix_with_strings, &list_of_strings_to_integers/1)
     Day2.corruption_checksum_pt1(matrix_with_numbers)
   end
-  
+
   @doc """
   Input is a filename. The given file should be on the following format:
     <integer>\t<integer>\t ... \t<integer>
@@ -62,5 +62,13 @@ defmodule Aoc2017 do
 
   defp list_of_strings_to_integers(list) do
     Enum.map(list, &String.to_integer/1)
+  end
+
+  def day3_pt1(number) do
+    Day3.spiral_memory_pt1(number)
+  end
+
+  def day3_pt2(number) do
+    Day3.spiral_memory_pt2(number)
   end
 end
