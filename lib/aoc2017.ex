@@ -76,6 +76,20 @@ defmodule Aoc2017 do
     Day4.high_entropy_passphrase_pt2(lines)
   end
 
+  def day5_pt1(filename) do
+    file_contents = File.read! filename
+    string_list = String.split(file_contents, "\n", trim: true)
+    numbers = list_of_strings_to_integers(string_list)
+    Day5.twisty_trampolines_pt1(numbers)
+  end
+
+  def day5_pt2(filename) do
+    file_contents = File.read! filename
+    string_list = String.split(file_contents, "\n", trim: true)
+    numbers = list_of_strings_to_integers(string_list)
+    Day5.twisty_trampolines_pt2(numbers)
+  end
+
   defp split_file_into_matrix(file_contents, word_delimiter) do
     file_contents |> String.split("\n")
                   |> Enum.map(&String.split(&1, word_delimiter))
