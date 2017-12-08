@@ -102,6 +102,18 @@ defmodule Aoc2017 do
     Day7.recursive_circus_pt2(string_lines)
   end
 
+  def day8_pt1(filename) do
+    file_contents = File.read! filename
+    string_lines = String.split(file_contents, "\n", trim: true)
+    Day8.like_registers_pt1(string_lines)
+  end
+
+  def day8_pt2(filename) do
+    file_contents = File.read! filename
+    string_lines = String.split(file_contents, "\n", trim: true)
+    Day8.like_registers_pt2(string_lines)
+  end
+
   defp split_file_into_matrix(file_contents, word_delimiter) do
     file_contents |> String.split("\n")
                   |> Enum.map(&String.split(&1, word_delimiter))
