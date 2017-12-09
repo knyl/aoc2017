@@ -114,6 +114,16 @@ defmodule Aoc2017 do
     Day8.like_registers_pt2(string_lines)
   end
 
+  def day9_pt1(filename) do
+    file_contents = File.read! filename
+    Day9.stream_processing_pt1(String.trim(file_contents))
+  end
+
+  def day9_pt2(filename) do
+    file_contents = File.read! filename
+    Day9.stream_processing_pt2(String.trim(file_contents))
+  end
+
   defp split_file_into_matrix(file_contents, word_delimiter) do
     file_contents |> String.split("\n")
                   |> Enum.map(&String.split(&1, word_delimiter))
