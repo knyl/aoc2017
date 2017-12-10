@@ -124,6 +124,22 @@ defmodule Aoc2017 do
     Day9.stream_processing_pt2(String.trim(file_contents))
   end
 
+  def day10_pt1(filename) do
+    file_contents = File.read! filename
+    lengths = file_contents
+      |> String.replace("\n", "")
+      |> String.split(",", trim: true)
+      |> list_of_strings_to_integers
+    Day10.knot_hash_pt1(lengths, 0..255)
+  end
+
+  def day10_pt2(filename) do
+    file_contents = File.read! filename
+    string = String.replace(file_contents, "\n", "")
+    IO.puts "String: #{inspect(string)}"
+    Day10.knot_hash_pt2(string)
+  end
+
   defp split_file_into_matrix(file_contents, word_delimiter) do
     file_contents |> String.split("\n")
                   |> Enum.map(&String.split(&1, word_delimiter))
