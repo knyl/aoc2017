@@ -136,8 +136,25 @@ defmodule Aoc2017 do
   def day10_pt2(filename) do
     file_contents = File.read! filename
     string = String.replace(file_contents, "\n", "")
-    IO.puts "String: #{inspect(string)}"
     Day10.knot_hash_pt2(string)
+  end
+
+  def day11_pt1(filename) do
+    file_contents = File.read! filename
+    string =
+      file_contents
+      |> String.replace("\n", "")
+      |> String.split(",", trim: true)
+    Day11.hex_ed_pt1(string)
+  end
+
+  def day11_pt2(filename) do
+    file_contents = File.read! filename
+    string =
+      file_contents
+      |> String.replace("\n", "")
+      |> String.split(",", trim: true)
+    Day11.hex_ed_pt2(string)
   end
 
   defp split_file_into_matrix(file_contents, word_delimiter) do
