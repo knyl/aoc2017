@@ -17,7 +17,21 @@ defmodule Day11 do
   defp walk("se", {x, y}), do: {x + 1, y - 1}
   defp walk("ne", {x, y}), do: {x + 1, y}
 
-  defp distance({x, y}), do: Kernel.abs(x) + Kernel.abs(y)
+  defp distance(coords, steps \\ 0)
+  defp distance({0, 0}, steps), do: steps
+  defp distance({0, y}, steps), do: steps + Kernel.abs(y)
+  defp distance({x, 0}, steps), do: steps + Kernel.abs(x)
+  defp distance({x, y}, steps) when y < 0 and x > 0 or y > 0 and x < 0 do
+    x_closest = Kernel.abs(x) < Kernel.abs(y)
+    if x_closest do
+      distance({0, y + x}, steps + Kernel.abs(x))
+    else
+      distance({x + y, 0}, steps + Kernel.abs(y))
+    end
+  end
+  defp distance({x, y}, steps) do
+    steps + Kernel.abs(x) + Kernel.abs(y)
+  end
 
   defp walk_and_save_dist(dir, {x, y, max_dist}) do
     {new_x, new_y} = walk(dir, {x, y})
