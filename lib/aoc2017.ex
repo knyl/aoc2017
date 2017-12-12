@@ -157,6 +157,15 @@ defmodule Aoc2017 do
     Day11.hex_ed_pt2(string)
   end
 
+  def day12_pt1(filename) do
+    file_contents = File.read! filename
+    input =
+      file_contents
+      |> String.split("\n", trim: true)
+      |> Enum.map(&String.split(&1, " <-> ", trim: true))
+    Day12.digital_plumber_pt1(input)
+  end
+
   defp split_file_into_matrix(file_contents, word_delimiter) do
     file_contents |> String.split("\n")
                   |> Enum.map(&String.split(&1, word_delimiter))
