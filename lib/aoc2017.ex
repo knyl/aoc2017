@@ -90,6 +90,22 @@ defmodule Aoc2017 do
     Day5.twisty_trampolines_pt2(numbers)
   end
 
+  def day6_pt1(filename) do
+    file_contents = File.read! filename
+    string_list = String.split(file_contents, "\t", trim: true)
+    string_list2 = Enum.map(string_list, &String.replace(&1, "\n", ""))
+    numbers = list_of_strings_to_integers(string_list2)
+    Day6.memory_reallocation_pt1(numbers)
+  end
+
+  def day6_pt2(filename) do
+    file_contents = File.read! filename
+    string_list = String.split(file_contents, "\t", trim: true)
+    string_list2 = Enum.map(string_list, &String.replace(&1, "\n", ""))
+    numbers = list_of_strings_to_integers(string_list2)
+    Day6.memory_reallocation_pt2(numbers)
+  end
+
   def day7_pt1(filename) do
     file_contents = File.read! filename
     string_lines = String.split(file_contents, "\n", trim: true)
