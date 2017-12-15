@@ -19,14 +19,17 @@ defmodule Day15 do
     count_matching(values_a, values_b)
   end
 
-  defp next(prev, factor), do: rem(prev * factor, @mod_value)
+  defp next(prev, factor) do
+    res = rem(prev * factor, @mod_value)
+    {res, res}
+  end
 
   defp matches?(a, b), do: lowest_16(a) === lowest_16(b)
 
   defp lowest_16(num), do: num &&& 0xffff
 
   defp generate_values(start, factor, mul, length) do
-    Stream.iterate(start, &next(&1, factor))
+    Stream.unfold(start, &next(&1, factor))
     |> Stream.filter(fn (x) -> rem(x, mul) === 0 end)
     |> Enum.take(length)
   end
