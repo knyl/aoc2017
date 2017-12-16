@@ -211,6 +211,24 @@ defmodule Aoc2017 do
     Day13.packet_scanners_pt2(list)
   end
 
+  def day16_pt1(filename) do
+    file_contents = File.read! filename
+    list =
+      file_contents
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.replace(&1, "\n", ""))
+    Day16.permutation_promenade_pt1(list, "abcdefghijklmnop")
+  end
+
+  def day16_pt2(filename) do
+    file_contents = File.read! filename
+    list =
+      file_contents
+      |> String.split(",", trim: true)
+      |> Enum.map(&String.replace(&1, "\n", ""))
+    Day16.permutation_promenade_pt2(list, "abcdefghijklmnop")
+  end
+
   defp split_file_into_matrix(file_contents, word_delimiter) do
     file_contents |> String.split("\n")
                   |> Enum.map(&String.split(&1, word_delimiter))
