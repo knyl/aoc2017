@@ -81,7 +81,6 @@ defmodule Day18 do
     pid1 = spawn(fn -> wait_for_start(steps) end)
     send pid1, {:process, %{:pid => pid0, :parent => self(), :start => 1, :sent => 0}}
     send pid0, {:process, %{:pid => pid1, :parent => self(), :start => 0, :sent => 0}}
-    IO.puts "pid1 #{inspect(pid1)}"
 
     receive do
       {:done, rec_pid, res} when rec_pid == pid1 -> res
@@ -90,15 +89,15 @@ defmodule Day18 do
 
   defp wait_for_start(steps) do
     receive do
-      {:process, state} -> do_duet(steps, Map.put(state, :len, length(steps)))
+      {:process, state} ->
+        do_duet(steps, Map.put(state, :len, length(steps)), %{"p" => state.start})
     end
   end
 
-  defp do_duet(steps, state, registers \\ %{}, curr_pos \\ 0) do
+  defp do_duet(steps, state, registers, curr_pos \\ 0) do
     step = Enum.at(steps, curr_pos)
     case play_step2(step, state, curr_pos, registers) do
-      {:done, _regs, updated_state} ->
-        IO.puts "done #{inspect(updated_state.sent)} pid #{inspect(self())}"
+      {:done, updated_state} ->
         send(state.parent, {:done, self(), updated_state.sent})
       {next_pos, regs, updated_state} -> do_duet(steps, updated_state, regs, next_pos)
     end
@@ -113,62 +112,49 @@ defmodule Day18 do
   defp play_step2(["jgz", reg, value], state, pos, registers), do: jgz2(reg, state, value, pos, registers)
 
   defp set2(reg, state, value, pos, registers) do
-    val = get_value2(value, registers, state.start)
+    val = get_value(value, registers)
     {pos + 1, Map.put(registers, reg, val), state}
   end
 
   defp mul2(reg, state, value, pos, registers) do
-    val = get_value2(value, registers, state.start)
-    v = Map.get(registers, reg, state.start)
+    val = get_value(value, registers)
+    v = Map.get(registers, reg, 0)
     {pos + 1, Map.put(registers, reg, v * val), state}
   end
 
   defp add2(reg, state, value, pos, registers) do
-    val = get_value2(value, registers, state.start)
-    v = Map.get(registers, reg, state.start)
+    val = get_value(value, registers)
+    v = Map.get(registers, reg, 0)
     {pos + 1, Map.put(registers, reg, v + val), state}
   end
 
   defp mod2(reg, state, value, pos, registers) do
-    val = get_value2(value, registers, state.start)
-    v = Map.get(registers, reg, state.start)
+    val = get_value(value, registers)
+    v = Map.get(registers, reg, 0)
     {pos + 1, Map.put(registers, reg, rem(v, val)), state}
   end
 
   defp snd2(reg, state, pos, registers) do
-    val = get_value2(reg, registers, state.start)
-    IO.puts "#{inspect(self())} sending #{inspect(val)}"
+    val = get_value(reg, registers)
     send(state.pid, {:value, val})
-    send(state.parent, {:back, self(), val})
     {pos + 1, registers, Map.put(state, :sent, state.sent + 1)}
   end
 
   defp rcv2(reg, state, pos, registers) do
     receive do
-      {:value, val} ->
-        IO.puts "#{inspect(self())} receiving #{inspect(val)}"
-        {pos + 1, Map.put(registers, reg, val), state}
+      {:value, val} -> {pos + 1, Map.put(registers, reg, val), state}
       after
-        5000 -> {:done, registers, state}
+        5000 -> {:done, state}
     end
   end
 
   defp jgz2(reg, state, value, pos, registers) do
-    next = get_value2(value, registers, state.start) + pos
-    reg_val = Map.get(registers, reg, state.start)
+    next = get_value(value, registers) + pos
+    reg_val = get_value(reg, registers)
     cond do
-      reg_val > 0 && (next + pos < 0 || pos + next >= state.len) -> send(state.parent, {:done, registers, state})
-      reg_val > 0 -> {pos + next, registers, state}
+      reg_val > 0 && (next < 0 || next >= state.len) -> {:done, state}
+      reg_val > 0 -> {next, registers, state}
       true -> {pos + 1, registers, state}
     end
   end
-
-  defp get_value2(value, registers, default) do
-    case Integer.parse(value) do
-      {val, ""} -> val
-      :error -> Map.get(registers, value, default)
-    end
-  end
-
-
 end
