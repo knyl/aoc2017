@@ -238,6 +238,15 @@ defmodule Aoc2017 do
     Day18.duet_pt1(list)
   end
 
+  def day18_pt2(filename) do
+    file_contents = File.read! filename
+    list =
+      file_contents
+      |> String.split("\n", trim: true)
+      |> Enum.map(&String.split(&1, " ", trim: true))
+    Day18.duet_pt2(list)
+  end
+
   defp split_file_into_matrix(file_contents, word_delimiter) do
     file_contents |> String.split("\n")
                   |> Enum.map(&String.split(&1, word_delimiter))
