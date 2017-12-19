@@ -2,7 +2,14 @@ defmodule Day19 do
 
   def tubes_pt1(maze) do
     start = find_start(Enum.at(maze, 0))
-    walk(maze, start, :south)
+    {res, _steps} = walk(maze, start, :south)
+    Enum.join(res) |> String.trim()
+  end
+
+  def tubes_pt2(maze) do
+    start = find_start(Enum.at(maze, 0))
+    {_res, steps} = walk(maze, start, :south)
+    steps
   end
 
   defp find_start(string) do
@@ -12,17 +19,21 @@ defmodule Day19 do
     {c1, 0}
   end
 
-  defp walk(maze, pos, dir, res \\ []) do
+  defp walk(maze, pos, dir, res \\ [], steps \\ 0) do
     square = get_square(maze, pos)
     next_coord = next(maze, square, pos, dir)
-    IO.puts "next #{inspect(pos)} #{inspect(next_coord)} #{inspect(square)}"
+    #IO.puts "next #{inspect(pos)} #{inspect(next_coord)} #{inspect(square)}"
     case next_coord do
-      :end -> Enum.reverse(res)
-      {coord, new_dir, char} -> walk(maze, coord, new_dir, [char | res])
-      {coord, new_dir} -> walk(maze, coord, new_dir, res)
+      :end -> {Enum.reverse(res), steps}
+      {coord, new_dir, char} ->
+        walk(maze, coord, new_dir, [char | res], steps + 1)
+      {coord, new_dir} -> walk(maze, coord, new_dir, res, steps + 1)
     end
   end
 
+  defp next(_maze, " ", _, _), do: :end
+  defp next(_maze, _, {-1, y}, _), do: :end
+  defp next(_maze, _, {x, -1}, _), do: :end
   defp next(_maze, "|", {x, y}, :south), do: {{x, y + 1}, :south}
   defp next(_maze, "-", {x, y}, :south), do: {{x, y + 1}, :south}
   defp next(_maze, "|", {x, y}, :north), do: {{x, y - 1}, :north}
@@ -30,6 +41,7 @@ defmodule Day19 do
   defp next(maze, "+", {x, y}, dir) when dir == :south or dir == :north do
     east_square = get_square(maze, {x+1, y})
     west_square = get_square(maze, {x-1, y})
+    #IO.puts "west #{inspect(west_square)}"
     cond do
       east_square == nil && west_square == nil -> :end
       east_square != nil && east_square != " " -> {{x+1, y}, :east}
@@ -46,7 +58,7 @@ defmodule Day19 do
   defp next(maze, "+", {x, y}, dir) when dir == :east or dir == :west do
     north_square = get_square(maze, {x, y-1})
     south_square = get_square(maze, {x, y+1})
-    IO.puts "north #{inspect(north_square)} #{inspect(south_square)}"
+    #IO.puts "north #{inspect(north_square)} #{inspect(south_square)}"
     cond do
       north_square == nil && south_square == nil -> :end
       north_square != nil && north_square != " " -> {{x, y-1}, :north}
