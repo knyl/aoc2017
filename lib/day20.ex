@@ -12,17 +12,11 @@ defmodule Day20 do
     move(map)
   end
 
-  defp move(map) do
+  defp move(map, step \\ 0)
+  defp move(map, 1000), do: length(Map.keys(map))
+  defp move(map, step) do
     updated_points = move_points(map)
-    if no_more_collisions(updated_points) do
-      length(Map.keys(updated_points))
-    else
-      move(updated_points)
-    end
-  end
-
-  defp no_more_collisions(map) do
-    # TODO
+    move(updated_points, step + 1)
   end
 
   defp find_lowest_acc({key, {_, _, acc}}, {lowest_acc, i}) do
@@ -58,8 +52,11 @@ defmodule Day20 do
   end
 
   defp update_points({key, {pos, vel, acc}}, map) do
-    new_vel = vel + acc
-    new_pos = pos + new_vel
+    {px, py, pz} = pos
+    {vx, vy, vz} = vel
+    {ax, ay, az} = acc
+    {nvx, nvy, nvz} = new_vel = {vx + ax, vy + ay, vz + az}
+    new_pos = {nvx + px, nvy + py, nvz + pz}
     Map.put(map, key, {new_pos, new_vel, acc})
   end
 
