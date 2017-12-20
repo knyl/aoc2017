@@ -7,6 +7,24 @@ defmodule Day20 do
     pos
   end
 
+  def particle_swarm_pt2(input) do
+    {_, map} = Enum.reduce(input, {0, %{}}, &parse_line/2)
+    move(map)
+  end
+
+  defp move(map) do
+    updated_points = move_points(map)
+    if no_more_collisions(updated_points) do
+      length(Map.keys(updated_points))
+    else
+      move(updated_points)
+    end
+  end
+
+  defp no_more_collisions(map) do
+    # TODO
+  end
+
   defp find_lowest_acc({key, {_, _, acc}}, {lowest_acc, i}) do
     if sum(acc) < sum(lowest_acc) do
       {acc, key}
@@ -31,6 +49,39 @@ defmodule Day20 do
 
   defp sum({x, y, z}) do
     abs(x) + abs(y) + abs(z)
+  end
+
+  defp move_points(map) do
+    updated_map = Enum.reduce(map, %{}, &update_points/2)
+    colliding = find_colliding(updated_map)
+    remove_colliding(updated_map, colliding)
+  end
+
+  defp update_points({key, {pos, vel, acc}}, map) do
+    new_vel = vel + acc
+    new_pos = pos + new_vel
+    Map.put(map, key, {new_pos, new_vel, acc})
+  end
+
+  defp find_colliding(map) do
+    collision_map = Enum.reduce(map, %{}, &hash_on_pos/2)
+    Enum.reduce(Map.values(collision_map), [], &get_colliding/2)
+  end
+
+  defp hash_on_pos({key, {pos, _, _}}, map) do
+    keys = Map.get(map, pos, [])
+    Map.put(map, pos, [key | keys])
+  end
+
+  defp get_colliding([_], list), do: list
+  defp get_colliding(elems, list), do: elems ++ list
+
+  defp remove_colliding(map, colliding) do
+    Enum.reduce(colliding, map, &do_remove/2)
+  end
+
+  defp do_remove(elem, map) do
+    Map.delete(map, elem)
   end
 
 end
