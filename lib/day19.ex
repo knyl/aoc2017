@@ -32,8 +32,8 @@ defmodule Day19 do
   end
 
   defp next(_maze, " ", _, _), do: :end
-  defp next(_maze, _, {-1, y}, _), do: :end
-  defp next(_maze, _, {x, -1}, _), do: :end
+  defp next(_maze, _, {-1, _y}, _), do: :end
+  defp next(_maze, _, {_x, -1}, _), do: :end
   defp next(_maze, "|", {x, y}, :south), do: {{x, y + 1}, :south}
   defp next(_maze, "-", {x, y}, :south), do: {{x, y + 1}, :south}
   defp next(_maze, "|", {x, y}, :north), do: {{x, y - 1}, :north}

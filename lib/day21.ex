@@ -1,4 +1,4 @@
-defmodule Day21Test do
+defmodule Day212 do
 
   def fractal_art_pt1(input) do
     {patterns2, patterns3} = parse_input(input)
@@ -20,14 +20,23 @@ defmodule Day21Test do
 
   defp find_match(pattern, two) do
     pattern
-    |> &make_squares/1
-    |> Enum.map(&make_squares_into_string/1)
+    |> make_squares
     |> Enum.map(fn (x) -> Map.get(two, x) end)
-    |> &make_into_square/1
+    |> make_into_square
   end
 
-  defp make_into_square(squares) do
-    Enum.map(
+  defp make_squares(squares) do
+    squares
+    |> Enum.map(&String.codepoints/1)
+    |> Enum.map(&Enum.chunk_every(&1, 2))
+    |> Enum.chunk_every(2)
+    |> Enum.map(&Enum.zip/2)
+    |> Enum.map(&Enum.map(&1, fn ({a, b}) -> List.to_string(a) <> List.to_string(b) end))
+    |> List.flatten
+  end
+
+  defp make_into_square(strings) do
+    strings
   end
 
   defp parse_input(input, two \\ %{}, three \\ %{})
@@ -36,7 +45,7 @@ defmodule Day21Test do
     parsed_row = parse_row(row)
     case parsed_row do
       {[_,_],_} -> parse_input(input, do_rotate(parsed_row, two), three)
-      {[_,_,_],_} -> parse_input(input, two, do_rotate(parsed_row, two, three))
+      {[_,_,_],_} -> parse_input(input, two, do_rotate(parsed_row, three))
     end
   end
 
@@ -100,6 +109,6 @@ defmodule Day21Test do
   end
 
   defp rotate_two(pattern) do
-    flip_horizontal(flip_vertial(pattern))
+    flip_horizontal(flip_vertical(pattern))
   end
 end
